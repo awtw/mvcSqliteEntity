@@ -1,0 +1,63 @@
+﻿@model csvWeb_v3_sqlite.Models.TemperatureRecord
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add New Record</h2>
+
+@using (@Html.BeginForm("Save", "View"))
+{
+    @Html.ValidationSummary(true, "Please fix the following errors.")
+    <div class="from-group">
+        @Html.LabelFor(m => m.時間)
+        @Html.TextBoxFor(m => m.時間, "{0:d MMM yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.時間)
+    </div>
+
+    <div class="from-group">
+        @Html.LabelFor(m => m.第1段溫度顯示值)
+        @Html.TextBoxFor(m => m.第1段溫度顯示值, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.第1段溫度顯示值)
+    </div>
+
+    <div class="from-group">
+        @Html.LabelFor(m => m.第2段溫度顯示值)
+        @Html.TextBoxFor(m => m.第2段溫度顯示值, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.第2段溫度顯示值)
+    </div>
+
+    <div class="from-group">
+        @Html.LabelFor(m => m.第3段溫度顯示值)
+        @Html.TextBoxFor(m => m.第3段溫度顯示值, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.第3段溫度顯示值)
+    </div>
+    <div class="from-group">
+        @Html.LabelFor(m => m.第4段溫度顯示值)
+        @Html.TextBoxFor(m => m.第4段溫度顯示值, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.第4段溫度顯示值)
+    </div>
+
+    <div class="from-group">
+        @Html.LabelFor(m => m.第5段溫度顯示值)
+        @Html.TextBoxFor(m => m.第5段溫度顯示值, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.第5段溫度顯示值)
+    </div>
+
+    <div class="from-group">
+        @Html.LabelFor(m => m.第6段溫度顯示值)
+        @Html.TextBoxFor(m => m.第6段溫度顯示值, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.第6段溫度顯示值)
+    </div>
+
+    @Html.HiddenFor(m => m.ID)
+    
+
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-primary">Save</button>
+
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,225 @@
+﻿@model IEnumerable<csvWeb_v3_sqlite.Models.TemperatureRecord>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Data Viewer Explore</h2>
+
+<form id="upload" action="@Url.Action("Index")" method="post" enctype="multipart/form-data">
+    <div class="form-group form-inline jumbotron color-transparent-gray">
+        <input type="file" class="form-control" value="file" name="uploadFile" id="file" />
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </div>
+</form>
+
+<button class="btn btn-primary" id="InsertDb">Insert To Database</button>
+<button class="btn btn-info" id="GotoDatabase">Database</button>
+<button class="btn btn-warning btn-db" id="newRecord">
+    @Html.ActionLink("New Record", "New", "DataViewer", "")
+</button>
+
+@if (@ViewBag.Message != null)
+{
+    <h5 class=" alert alert-danger"> @ViewBag.Message</h5>
+}
+else
+{
+    <h5> @ViewBag.Message</h5>
+}
+<div id="InsertMessage">
+    @if (ViewBag.HasFile == true)
+    {
+        <h5 class=" alert alert-success">Insert Success</h5>
+    }
+    else
+    {
+        <h5 class=" alert alert-danger">Insert Error</h5>
+    }
+</div>
+
+@if (Model != null)
+{
+    <table id="origin" class="table table-bordered table-hover">
+
+
+        <thead>
+            <tr>
+                <th>時間</th>
+                <th>第1段溫度顯示值</th>
+                <th>第2段溫度顯示值</th>
+                <th>第3段溫度顯示值</th>
+                <th>第4段溫度顯示值</th>
+                <th>第5段溫度顯示值</th>
+                <th>第6段溫度顯示值</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model == null)
+            {
+                <tr>
+                    <td colspan="7">No item</td>
+                </tr>
+            }
+            else
+            {
+
+                foreach (var temp in Model)
+                {
+
+                    <tr>
+                        <td>@temp.時間</td>
+                        <td>@temp.第1段溫度顯示值</td>
+                        <td>@temp.第2段溫度顯示值</td>
+                        <td>@temp.第3段溫度顯示值</td>
+                        <td>@temp.第4段溫度顯示值</td>
+                        <td>@temp.第5段溫度顯示值</td>
+                        <td>@temp.第6段溫度顯示值</td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+}
+
+<table id="dataTable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            @*<th>ID</th>*@
+            <th>時間</th>
+            <th>第1段溫度顯示值</th>
+            <th>第2段溫度顯示值</th>
+            <th>第3段溫度顯示值</th>
+            <th>第4段溫度顯示值</th>
+            <th>第5段溫度顯示值</th>
+            <th>第6段溫度顯示值</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            $("#origin").DataTable();
+        })
+    </script>
+    @*<script>
+        $(document).ready(function() {
+
+            //table
+            var table = $("#dataTable").DataTable({
+                ajax: {
+                    url: "/api/View",
+                    dataSrc: ""
+                },
+                columns: [
+                    //{
+                    //    data: "ID",
+                    //    render: function (data) {
+                    //        return data;
+                    //    }
+                    //},
+                    {
+                        data: "時間",
+                        render: function(data,type, row) {
+                            var replaced = row.時間.replace(/T/g, "").replace(/-/g,"").replace(/:/g,"");
+                            var temp = "<a href='/View/Edit/" + row.ID + "'>" + replaced + "</a>";
+                            return temp;
+                        }
+                    },
+                    {
+                        data: "第1段溫度顯示值",
+                        render: function(data) {
+                            return data;
+                        }
+                    },
+                    {
+                        data: "第2段溫度顯示值",
+                        render: function(data) {
+                            return data;
+                        }
+                    },
+                    {
+                        data: "第3段溫度顯示值",
+                        render: function(data) {
+                            return data;
+                        }
+                    },
+                    {
+                        data: "第4段溫度顯示值",
+                        render: function(data) {
+                            return data;
+                        }
+                    },
+                    {
+                        data: "第5段溫度顯示值",
+                        render: function(data) {
+                            return data;
+                        }
+                    },
+                    {
+                        data: "第6段溫度顯示值",
+                        render: function(data) {
+                            return data;
+                        }
+                    },
+                    {
+                        data: "ID",
+                        render: function(data) {
+                            return "<button class='btn-link js-delete' data-record-id= " + data + ">Delete</button>";
+                        }
+
+                    }
+                ]
+            });
+            //table end
+
+            //Insert
+            $("#InsertDb").click(function() {
+                $.ajax({
+                    url: "View/InsertDb",
+                    type: "POST",
+                });
+                $("#InsertMessage").fadeIn().show(0).delay(2000).fadeOut();
+
+
+            });
+            //Insert end
+
+
+
+            //Delete
+            $("#dataTable").on("click",
+                ".js-delete",
+                function() {
+                    var button = $(this);
+
+                    bootbox.confirm("確定要刪除此欄嗎 ?",
+                        function(result) {
+                            if (result) {
+                                $.ajax({
+                                    url: "api/View/" + button.attr("data-record-id"),
+                                    method: "DELETE",
+                                    success: function() {
+                                        table.row(button.parents("tr").remove().draw());
+                                    }
+                                });
+                            }
+                        });
+                });
+            //Delete end
+
+            //GoToDb
+            $("#GotoDatabase").click(function() {
+                $("#dataTable_wrapper").show();
+                $("#origin").hide();
+            });
+            //GoToDb end
+
+           
+        })
+    </script>*@
+}
